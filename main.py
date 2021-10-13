@@ -1,16 +1,63 @@
-# This is a sample Python script.
+# -*- coding = utf-8 -*-
+# @Time  :2021/10/13 2:57 下午
+# @Author  : Ruin
+# @File  :main.py
+# @software: PyCharm
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+import numpy as np
 
 
-# Press the green button in the gutter to run the script.
+def Smith_Waterman(str1, str2, s_score, m_score):
+    len1, len2 = len(str1), len(str2)
+
+    # initialize the socre matrix
+    matrix = np.zeros([len1 + 1, len2 + 1])
+    for i in range(len1):
+        matrix[i, 0] = 0
+    for i in range(len2):
+        matrix[0, i] = 0
+
+    Space_punish = 0
+
+    #score the matrix
+    for i in range(1, len1 + 1):
+        for j in range(1, len2 + 1):
+            Skj = matrix[i-1, j] - Space_punish
+            Sik = matrix[i, j-1] - Space_punish
+            Sij = matrix[i-1, j-1] + 3 if str1[i-1] == str2 [j-1] else matrix[i-1, j-1] - 3
+            matrix[i,j] = max(Skj, Sik, Sij, 0)
+    match_str1, match_str2, match_rate = Trace_back(str1, str2, matrix, Space_punish)
+    return match_str1, match_str2, match_rate
+
+def Trace_back(str1, str2, M, Space_punish):
+    x, y = np.where(M == np.max(M))
+    x, y = x[0], y[0]
+
+    match_str1, match_str2 = "", ""
+    match_count = 0
+    score = 0
+    count = 0
+    while M[x,y] !=0 :
+        count += 1
+        if M[x - 1, y] - Space_punish == M[x, y]:
+            x = x - 1
+            match_str1, match_str2 = str1[x] + match_str1, '_' + match_str2
+
+            score += 0.5
+        elif M[x, y-1] - Space_punish == M[x, y]:
+            y = y - 1
+
+            match_str1, match_str2 = '_' + match_str1, str2[y] + match_str2
+            score += 0.5
+        else:
+            x, y = x-1, y-1
+            match_str1, match_str2 = str1[x] + match_str1, str2[y] + match_str2
+            match_count += 1
+            score += 1
+    return match_str1, match_str2, score / count
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    str1 = "我和你本应该"
+    str2 = "我和你不应该"
+    print(Smith_Waterman(str1, str2, 0.5, 1))
+    # implement of Smith-Waterman
