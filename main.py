@@ -57,7 +57,17 @@ def Trace_back(str1, str2, M, Space_punish):
     return match_str1, match_str2, score / count
 
 if __name__ == '__main__':
-    str1 = "我和你本应该"
-    str2 = "我和你不应该"
-    print(Smith_Waterman(str1, str2, 0.5, 1))
+    with open("paper1.txt") as f:
+        str1 = f.read()
+    with open("paper2.txt") as f:
+        str2 = f.read()
+    #print(Smith_Waterman(str1, str2, 0.5, 1))
+    repeat = ""
+    for i in str1 :
+        if i == "_":
+            continue
+        else:
+            repeat += i
+
+    print(repeat)
     # implement of Smith-Waterman
