@@ -68,19 +68,21 @@ def paper_compare(paper_list):
             count += 1
         print("paper", i+1, "比较了", count, "次")
 
-        #存数据
+        return Smith_Waterman(paper_list[i], paper_list[j])
 
 
 
 if __name__ == '__main__':
-    with open("paper1.txt") as f:
+    with open("pt1.txt") as f:
         str1 = f.read()
-    with open("paper2.txt") as f:
+    with open("pt2.txt") as f:
         str2 = f.read()
     with open("paper3.txt") as f:
         str3 = f.read()
-    paper_list = [str1, str2, str3]
-    paper_compare(paper_list)
+    paper_list = [str1, str2]
+    pla1, pla2, socre = paper_compare(paper_list)
+    print(pla1, pla2, socre)
+
 
     #data = [['paper1', repeat1, score]]
     #paper1 = pd.DataFrame(data, columns=['name', 'rep_to_p2', 'score'])
